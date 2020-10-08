@@ -1,8 +1,8 @@
 #include "Sonar.h"
 
 // Define pins
-const int TRIG_PIN	= 2;
-const int ECHO_PIN	= 3;
+const int TRIG_PIN	= 4;
+const int ECHO_PIN	= 5;
 
 Sonar sonar(TRIG_PIN, ECHO_PIN);
 

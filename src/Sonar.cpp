@@ -20,35 +20,103 @@ Sonar::Sonar(uint8_t pin_trigger, uint8_t pin_echo)
 }
 
 //
-// Determine distance in inches
-// Input: None
-// Output: in as a floating point number
-//
-float
-Sonar::ping_in()
-{
-    float duration, in;
-
-    duration = this->_ping_duration();
-    in = duration * this->_sos_in / 2.0;
-    
-    return (in);
-}
-
-//
 // Determine distance in centimeters
 // Input: None
 // Output: cm as a floating point number
+// Speed of sound is calculated using a default temperature
 //
 float
 Sonar::ping_cm()
 {
-    float duration, cm;
+    return (this->ping_cm(this->_default_temp));
+}
+
+//
+// Determine distance in centimeters
+// Input: Temperature in degrees Celsius
+// Output: cm as a floating point number
+// Speed of sound is calculated for the provided temperature
+//
+float
+Sonar::ping_cm(float temp)
+{
+    float duration, cm, sos;
 
     duration = this->_ping_duration();
-    cm = duration * this->_sos_cm / 2.0;
+    sos = (20.05 * sqrt(273.16 + temp)) / 10000;
+    cm = duration * sos / 2.0;
     
     return (cm);
+}
+
+//
+// Determine distance in inches
+// Input: None
+// Output: in as a floating point number
+// Speed of sound is calculated using a default temperature
+//
+float
+Sonar::ping_in()
+{
+    return(this->cm_to_in(this->ping_cm()));
+}
+
+//
+// Determine distance in inches
+// Input: Temperature in degrees Fahrenheit
+// Output: in as a floating point number
+// Speed of sound is calculated for the provided temperature
+//
+float
+Sonar::ping_in(float temp)
+{
+    float distance;
+
+    return(this->cm_to_in(this->ping_cm(this->f_to_c(temp))));
+}
+
+//
+// Convert centimeters to inches
+// Input: (float) centimeters
+// Output: (float) inches
+//
+float
+Sonar::cm_to_in(float cm)
+{
+    return(cm / 2.54);
+}
+
+//
+// Convert inches to centimeters
+// Input: (float) inches
+// Output: (float) centimeters
+//
+float
+Sonar::in_to_cm(float in)
+{
+    return(in * 2.54);
+}
+
+//
+// Convert degrees celsius to degrees fahrenheit
+// Input: (float) degrees C
+// Output: (float) degrees F
+//
+float
+Sonar::c_to_f(float c)
+{
+    return((c * 1.8) + 32.0);
+}
+
+//
+// Convert degrees fahrenheit to degrees celsius
+// Input: (float) degrees F
+// Output: (float) degrees C
+//
+float
+Sonar::f_to_c(float f)
+{
+    return((f - 32.0) / 1.8);
 }
 
 //
